@@ -24,11 +24,7 @@ def move_annotated_images(images_path: str, annotations_path: str) -> None:
     for image in images_to_move:
         # Move image if not exist in the destination directory
         if not os.path.exists(os.path.join(dest_dir, image)):
-            shutil.move(os.path.join(images_path, image), dest_dir)
-
-        # Remove image if alredy exist in the destination directory
-        else:
-            os.remove(os.path.join(images_path, image))
+            shutil.move(os.path.join(images_path, image), dest_dir) 
 
 
 if __name__ == '__main__':
