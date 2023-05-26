@@ -22,7 +22,8 @@ def move_annotated_images(images_path: str, annotations_path: str) -> None:
 
     # Iterate over the list of image filenames and move each image
     for image in images_to_move:
-        shutil.move(os.path.join(images_path, image), dest_dir)
+        if not os.path.exists(os.path.join(dest_dir, image)):
+            shutil.move(os.path.join(images_path, image), dest_dir)
 
 if __name__ == '__main__':
     # Setup argument parser
