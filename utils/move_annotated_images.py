@@ -15,6 +15,7 @@ def move_annotated_images(images_path: str, annotations_path: str) -> None:
     """
     os.makedirs('./dataset/images', exist_ok=True)
 
+    src_dir = images_path
     dest_dir = './dataset/images'
 
     # Create a list of image filenames to move by replacing the '.txt' extension with '.jpg'
@@ -22,9 +23,14 @@ def move_annotated_images(images_path: str, annotations_path: str) -> None:
 
     # Iterate over the list of image filenames and move each image
     for image in images_to_move:
-        # Move image if not exist in the destination directory
-        if not os.path.exists(os.path.join(dest_dir, image)):
-            shutil.move(os.path.join(images_path, image), dest_dir) 
+        # Check if image exists in source directory
+        if os.path.exists(os.path.join(src_dir, image)):
+            # Move image if not exist in the destination directory
+            if not os.path.exists(os.path.join(dest_dir, image)):
+                shutil.move(os.path.join(src_dir, image), dest_dir)
+            # Remove it from source directory if it already exists in destination directory
+            else:
+                os.remove(os.path.join(src_dir, image))
 
 
 if __name__ == '__main__':
