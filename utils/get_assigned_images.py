@@ -24,7 +24,7 @@ def copy_my_images(member_name, path):
 
     members = ['sobhy', 'rashed', 'nada', 'yomna', 'reem', 'boda']
     
-    images = glob.glob(path)
+    images = sorted(glob.glob(path))
     assigned_images = images[members.index(member_name)*530: (members.index(member_name)+1)*530]
 
     # create the destination directory if it doesn't exist
