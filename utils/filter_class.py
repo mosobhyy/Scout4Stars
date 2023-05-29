@@ -2,7 +2,7 @@ import os
 import shutil
 import glob
 import argparse
-import sys
+
 
 def filter_object(object, images_path, annotations_path):
     
@@ -48,7 +48,7 @@ def filter_object(object, images_path, annotations_path):
                 if os.path.exists(new_file_path):
                     src = os.path.join(images_path, image_name)
                     dest = os.path.join(object_path, image_name)
-                    shutil.move(src, dest)
+                    shutil.copy(src, dest)
 
             # Remove last empty line
             if os.path.exists(new_file_path):
