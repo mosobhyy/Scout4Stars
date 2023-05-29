@@ -35,12 +35,12 @@ def move_annotated_images(images_path: str, annotations_path: str) -> None:
 
 if __name__ == '__main__':
     # Setup argument parser
-    parser = argparse.ArgumentParser(description='Delete annotated images.')
-    parser.add_argument('images_path', help='Path of the images to be deleted')
+    parser = argparse.ArgumentParser(description='Move annotated images.')
+    parser.add_argument('images_path', help='Path of the images to be moved')
     parser.add_argument('annotations_path', help='Path to the annotations')
 
     # Parse arguments
     args = parser.parse_args()
 
-    # Delete annotated images
+    # Move annotated images
     move_annotated_images(args.images_path, args.annotations_path)
