@@ -23,9 +23,9 @@ def filter_object(current_path, object, images_path, annotations_path):
     # Initialize paths
     object_path = object
     if not images_path:
-        images_path = os.path.join(root_path, 'dataset/images')
+        images_path = os.path.join(os.path.join(root_path, 'dataset'), 'images')
     if not annotations_path:
-        annotations_path = os.path.join(root_path, 'dataset/annotations')        
+        annotations_path = os.path.join(os.path.join(root_path, 'dataset'), 'annotations')
 
     # Get classes names 
     with open(os.path.join(root_path, 'classes.txt'), 'r') as file:
@@ -48,7 +48,7 @@ def filter_object(current_path, object, images_path, annotations_path):
         and append annotation of filtered object to a new file with the same name
     """
     for annotation_file in annotations_files:
-        file_name = annotation_file.split('/')[-1]
+        file_name = os.path.basename(annotation_file)
         image_name = file_name.replace('txt', 'jpg')
         new_file_path = os.path.join(object_path, file_name)
 
