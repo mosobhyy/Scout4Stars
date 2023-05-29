@@ -5,6 +5,16 @@ import argparse
 
 
 def filter_object(object, images_path, annotations_path):
+    """
+    Filter objects from annotation files and create new annotation files for the filtered objects.
+
+    :param object: The name of the object to filter.
+    :type object: str
+    :param images_path: The path to the directory containing the images. Default is '../dataset/images'.
+    :type images_path: str
+    :param annotations_path: The path to the directory containing the annotation files. Default is '../dataset/annotations'.
+    :type annotations_path: str
+    """
     
     # Initialize paths
     object_path = object
