@@ -1,10 +1,11 @@
+import sys
 import os
 import shutil
 import glob
 import argparse
 
 
-def filter_object(object, images_path, annotations_path):
+def filter_object(current_path, object, images_path, annotations_path):
     """
     Filter objects from annotation files and create new annotation files for the filtered objects.
 
@@ -15,16 +16,19 @@ def filter_object(object, images_path, annotations_path):
     :param annotations_path: The path to the directory containing the annotation files. Default is '../dataset/annotations'.
     :type annotations_path: str
     """
-    
+
+    # Get root path
+    root_path = os.path.abspath(os.path.dirname(os.path.dirname(current_path)))
+
     # Initialize paths
     object_path = object
     if not images_path:
-        images_path = './dataset/images'
+        images_path = os.path.join(root_path, 'dataset/images')
     if not annotations_path:
-        annotations_path = './dataset/annotations'
+        annotations_path = os.path.join(root_path, 'dataset/annotations')        
 
     # Get classes names 
-    with open('./classes.txt', 'r') as file:
+    with open(os.path.join(root_path, 'classes.txt'), 'r') as file:
         classes = [class_name.strip()for class_name in file.readlines()]
 
     # Get id that represent filtered class 
@@ -81,4 +85,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Filter objects
-    filter_object(args.object, args.images_path, args.annotations_path)
+    filter_object(sys.argv[0], args.object, args.images_path, args.annotations_path)
