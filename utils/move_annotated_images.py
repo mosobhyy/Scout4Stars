@@ -18,8 +18,8 @@ def move_annotated_images(images_path: str, annotations_path: str) -> None:
     src_dir = images_path
     dest_dir = './dataset/images'
 
-    # Create a list of image filenames to move by replacing the '.txt' extension with '.jpg'
-    images_to_move = [file.replace('txt', 'jpg') for file in os.listdir(annotations_path)]
+    # Create a list of image filenames to move by replacing the extension with '.jpg'
+    images_to_move = [file.split('.')[0] + '.jpg' for file in os.listdir(annotations_path)]
 
     # Iterate over the list of image filenames and move each image
     for image in images_to_move:
