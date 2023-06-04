@@ -2,7 +2,7 @@ import os
 import shutil
 import argparse
 
-def move_annotated_images(images_path: str, masked_images_path: str) -> None:
+def move_annotated_images(images_path: str, masks_path: str) -> None:
     """
     Moves annotated images from a given directory to images directory under dataset directory.
 
@@ -19,7 +19,7 @@ def move_annotated_images(images_path: str, masked_images_path: str) -> None:
     dest_dir = './dataset/images_for_segmantation'
 
     # Create a list of image filenames to move by replacing the extension with '.jpg'
-    images_to_move = [file.split('.')[0] + '.jpg' for file in os.listdir(masked_images_path)]
+    images_to_move = [file.split('.')[0] + '.jpg' for file in os.listdir(masks_path)]
 
     # Iterate over the list of image filenames and move each image
     for image in images_to_move:
@@ -43,4 +43,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Move annotated images
-    move_annotated_images(args.images_path, args.masked_images_path)
+    move_annotated_images(args.images_path, args.masks_path)
