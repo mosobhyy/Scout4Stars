@@ -37,7 +37,7 @@ if __name__ == '__main__':
     # Setup argument parser
     parser = argparse.ArgumentParser(description='Move annotated images.')
     parser.add_argument('images_path', help='Path of the images to be moved')
-    parser.add_argument('masked_images_path', help='Path to the masked_images')
+    parser.add_argument('masks_path', help='Path to the masked_images')
 
     # Parse arguments
     args = parser.parse_args()
