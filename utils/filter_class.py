@@ -59,14 +59,14 @@ def filter_object(current_path, object, images_path, annotations_path):
                         new_file.write(' '.join(['0'] + line.split()[1:]))
                         new_file.write('\n')
 
-                if os.path.exists(new_file_path):
-                    src = os.path.join(images_path, image_name)
-                    dest = os.path.join(object_path, image_name)
-                    shutil.copy(src, dest)
-
-            # Remove last empty line
             if os.path.exists(new_file_path):
+                
+                # Copy images to filtered object's path
+                src = os.path.join(images_path, image_name)
+                dest = os.path.join(object_path, image_name)
+                shutil.copy(src, dest)
 
+                # Remove last empty line
                 with open(new_file_path, 'r') as new_file:
                     lines = new_file.readlines()
 
