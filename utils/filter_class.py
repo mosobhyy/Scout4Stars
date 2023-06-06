@@ -56,7 +56,7 @@ def filter_object(current_path, object, images_path, annotations_path):
             for line in file:
                 if line.startswith(str(object_id)):
                     with open(new_file_path, 'a') as new_file:
-                        new_file.write(' '.join(['0'] + line.split()[1:]))
+                        new_file.write(line)
                         new_file.write('\n')
 
             if os.path.exists(new_file_path):
