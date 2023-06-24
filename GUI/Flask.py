@@ -106,9 +106,9 @@ def show_files():
             with open(os.path.join(file_path, file_name), 'r') as file:
                 content = file.readlines()
                 file_contents.append((file_name, content))
-    return render_template("result page.html", 
+    return render_template("ResultReport.html", 
                            page_title="Result Page",
-                           custom_css='result',
+                           custom_css='ResultReportStyle',
                            files=file_contents)
 
 
