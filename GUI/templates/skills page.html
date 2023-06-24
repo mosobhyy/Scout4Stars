@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block body %}  
+<form class="fonts" method="POST" action="/" enctype="multipart/form-data">
+
+	<fieldset class="checkbox-group">
+		<legend class="checkbox-group-legend">Choose the Tests</legend>
+
+		<!-- First checkbox -->
+		<div class="checkbox">
+			<label class="checkbox-wrapper">
+				<input type="checkbox" class="checkbox-input" name="mycheckbox" value="1" id="ch1" onclick="enableFileInput(this, 'fileInput1')"/>
+
+				<span class="checkbox-tile">
+					<span class="checkbox-icon"><img src="/static/icons/Speed.png" class="image-class" ></span>
+					<span class="checkbox-label">Speed</span>
+				</span>
+				<div class="upload_button">
+					<input id="fileInput1" type="file" name="video_1"  accept="video/*" disabled>
+				</div>
+			</label>
+	</div>
+
+		<!-- 2nd checkbox -->
+		<div class="checkbox">
+			<label class="checkbox-wrapper">
+				<input type="checkbox" class="checkbox-input" name="mycheckbox" value="2" id="ch2" onclick="enableFileInput(this, 'fileInput2')"/>
+				<span class="checkbox-tile">
+					<span class="checkbox-icon"><img src="/static/icons/Jump.png" class="image-class" ></span>
+					<span class="checkbox-label">Power</span>
+				</span>
+				<div class="upload_button">
+					<input type="file"  name="video_2" accept="video/*" id="fileInput2" disabled>
+				</div>
+			</label>
+		</div>
+
+		<!-- 3rd checkbox -->
+		<div class="checkbox">
+			<label class="checkbox-wrapper">
+				<input type="checkbox" class="checkbox-input" name="mycheckbox" value="3" id="ch3" onclick="enableFileInput(this, 'fileInput3')"/>
+				<span class="checkbox-tile">
+					<span class="checkbox-icon"><img src="/static/icons/Shooting.png" class="image-class" ></span>
+					<span class="checkbox-label">Shoot</span>
+				</span>
+				<div class="upload_button">
+					<input type="file" accept="video/*" name="video_3" id="fileInput3" disabled>
+				</div>
+			</label>
+		</div>
+
+		<!-- 4th checkbox -->
+		<div class="checkbox">
+			<label class="checkbox-wrapper">
+				<input type="checkbox" class="checkbox-input" name="mycheckbox" value="4" id="ch4" onclick="enableFileInput(this, 'fileInput4')"/>
+				<span class="checkbox-tile">
+					<span class="checkbox-icon"><img src="/static/icons/Dribble.png" class="image-class"></span>
+					<span class="checkbox-label">Dribble</span>
+				</span>
+				<div class="upload_button">
+					<input type="file" accept="video/*" name="video_4"  id="fileInput4" disabled>
+				</div>
+			</label>
+		</div>
+
+		<!-- 5th checkbox -->
+		<div class="checkbox">
+			<label class="checkbox-wrapper">
+				<input type="checkbox" class="checkbox-input" name="mycheckbox" value="5" id="ch5" onclick="enableFileInput(this, 'fileInput5')"/>
+				<span class="checkbox-tile">
+					<span class="checkbox-icon"><img src="/static/icons/Agility.png" class="image-class"></span>
+					<span class="checkbox-label">Agility</span>
+				</span>
+				<div class="upload_button">
+					<input type="file" accept="video/*" name="video_5"  id="fileInput5" disabled>
+				</div>
+			</label>
+		</div>
+
+		<!-- 6th checkbox -->
+		<div class="checkbox">
+			<label class="checkbox-wrapper">
+				<input type="checkbox" class="checkbox-input" name="mycheckbox" value="6" id="ch6" onclick="enableFileInput(this, 'fileInput6')"/>
+				<span class="checkbox-tile">
+					<span class="checkbox-icon"><img src="/static/icons/Pass.png" class="image-class"></span>
+					<span class="checkbox-label">Pass</span>
+				</span>
+				<div class="upload_button">
+					<input type="file" accept="video/*" name="video_6"  id="fileInput6" disabled>
+				</div>
+			</label>
+		</div>
+	</fieldset>
+
+	<div class="container">
+		<div class="warning_message">
+			<p>{{ message }}</p>
+		</div>
+	<input class="run_button" type="submit" name="run" value="Run">
+	</div>
+</form>
+
+{% endblock %}
+

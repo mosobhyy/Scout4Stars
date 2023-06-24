@@ -1,0 +1,4 @@
+player 2:
+         speed: 4
+         agility: 2
+	 power: 7
