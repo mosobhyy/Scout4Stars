@@ -19,30 +19,17 @@
 
     <!-- Table Body -->
     <tbody>
+        <!-- dynamic rows based on number of files (lists) -->
+        {% for i in range(len(data)) %}
         <tr>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
+          <td>{{ i+1 }}</td>
+          <!-- dynamic content based on list -->
+          {% for line in data[i] %}
+          <td>{{ line }}</td>
+          {% endfor %}
         </tr>
-        <tr>
-            <td>2</td>
-            <td>5</td>
-            <td>3</td>
-            <td>8</td>
-            <td>2</td>
-            <td>0</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>2</td>
-            <td>6</td>
-            <td>1</td>
-            <td>2</td>
-            <td>9</td>
-        </tr>
+        {% endfor %}
+        
     </tbody>
     <!-- End of Table Body -->
 </table>
@@ -68,6 +55,7 @@ for (i = 1; i < rows.length - 1; i++) {
 }
 }
 
+// Function that converts the table to pdf
 $("body").on("click", "#export-button-id", function () {
 html2canvas($('#report-table-id')[0], {
     onrendered: function (canvas) {

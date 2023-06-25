@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, session, jsonify
 from werkzeug.utils import secure_filename
+import pandas as pd
 
 skills_app = Flask(__name__)
 # Generate a secret key
@@ -98,21 +99,20 @@ def progress():
 def show_files():
     file_path = 'data'  # Path to the directory containing the files
     file_list = os.listdir(file_path)
-    file_contents = []
+    all_files = []
 
     for file_name in file_list:
-        if file_name.endswith('.txt'):  # Filter only text files
-            file_base_name = os.path.splitext(file_name)[0]
-            with open(os.path.join(file_path, file_name), 'r') as file:
+            with open(os.path.join(file_path , file_name), 'r') as file:
                 content = file.readlines()
-                file_contents.append((file_name, content))
+                lines = [float(line.strip()) for line in content]
+                all_files.append(lines)
+
+    
     return render_template("ResultReport.html", 
                            page_title="Result Page",
                            custom_css='ResultReportStyle',
-                           files=file_contents)
+                           data=all_files, len = len)
 
-
-                           
 
 if __name__ == "__main__":
     skills_app.config["TEMPLATES_AUTO_RELOAD"] = True
