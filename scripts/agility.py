@@ -84,10 +84,6 @@ def agility_measure(PATH: str) -> None:
 
     ret, frame = cap.read()
 
-    # if os.path.basename(PATH).lower() == 'agility.mp4':
-    #   if i > 210:
-    #     break
-
     if not ret:
       break
 

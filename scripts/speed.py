@@ -75,9 +75,6 @@ def speed_measure(PATH: str) -> None:
   frame_count = 0
   players_stats = {} # Save players's stats 
 
-  # Initialize players' images path
-  save_players_path = os.path.basename(PATH).split('.')[0]+'_players'
-
   # Loop through each frame of the video and apply the segmentation code
   for i in tqdm(range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT)))):
 
@@ -159,7 +156,7 @@ def speed_measure(PATH: str) -> None:
 
         start=True
 
-      ########################## Save player's image & draw player's rectangle and ID ##########################
+      ########################## Player's forefoot did not pass the start line yet ##########################
       else:
         out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
 
@@ -220,7 +217,7 @@ def speed_measure(PATH: str) -> None:
         xmin, ymin, xmax, ymax = player_bbox = [int(x) for x in player_bbox]
 
         #################### Save player image ####################
-        save_image(frame, flip, i, save_players_path, player_id, player_bbox)
+        save_image(frame, flip, i, PLAYERS_SAVE_PATH, player_id, player_bbox)
 
         #################### Draw player's rectangle and ID ####################
 
@@ -261,6 +258,8 @@ def speed_measure(PATH: str) -> None:
       # Write frame
       out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
 
+  ########################## Save CSV file ##########################
+  
   # Dictionary to dataframe
   players_stats_df = pd.DataFrame.from_dict(players_stats, orient='index', columns=['Speed (m/s)'])
 
