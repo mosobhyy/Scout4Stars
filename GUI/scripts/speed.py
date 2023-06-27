@@ -1,24 +1,23 @@
-import argparse
 import cv2
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
-from utils import *
-from segment import Segmenter
-from track import Tracker
+from scripts.utils import *
+from scripts.segment import Segmenter
+from scripts.track import Tracker
 
 def speed_measure(PATH: str) -> None:
-
-  VIDEO_SAVE_NAME = os.path.basename(PATH).split('.')[0]+'_output.mp4'
+  
   CSV_SAVE_NAME = os.path.basename(PATH).split('.')[0]+'_stats.csv'
-  PLAYERS_SAVE_PATH = os.path.basename(PATH).split('.')[0]+'_players'
+  CSV_SAVE_PATH = os.path.join(os.path.join(os.path.abspath('.'), 'data'), CSV_SAVE_NAME)
+  PLAYERS_SAVE_NAME = os.path.basename(PATH).split('.')[0]+'_players'
+  PLAYERS_SAVE_PATH = os.path.join(os.path.join(os.path.abspath('.'), 'data'), PLAYERS_SAVE_NAME)
+
   cap = cv2.VideoCapture(PATH)
   width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
   height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
   fps = int(cap.get(cv2.CAP_PROP_FPS))
-  out = cv2.VideoWriter(VIDEO_SAVE_NAME, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
   # Video's lines (user input)
   start_lines_map = {'Speed_t.MP4': ([133, 627], [44, 633]),
@@ -76,12 +75,15 @@ def speed_measure(PATH: str) -> None:
   players_stats = {} # Save players's stats 
 
   # Loop through each frame of the video and apply the segmentation code
-  for i in tqdm(range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT)))):
+  total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+  for i in tqdm(range(total_frames)):
 
     ret, frame = cap.read()
 
     if not ret:
       break
+
+    yield int(i/total_frames) * 100
 
     if flip:
       frame = cv2.flip(frame, 1)
@@ -109,7 +111,6 @@ def speed_measure(PATH: str) -> None:
       """ NOTE: ** Validate on 2nd frame ** """
       if len(stats) == 1:
         masked_frame = last_masked_frame
-        out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
         continue
       else:
         last_masked_frame = masked_frame
@@ -133,7 +134,6 @@ def speed_measure(PATH: str) -> None:
       if not player_forefoot:
         last_masked_frame = None
 
-        out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
         continue
 
       ############## OUTLIERS (OUT OF TESTING AREA)  #################
@@ -142,7 +142,6 @@ def speed_measure(PATH: str) -> None:
       if player_forefoot[1] > start_line[0][1]: ######## (ITS y > y of the start line) ########
         last_masked_frame = None
 
-        out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
         continue
 
       ############## Update masked frame to fit player's boundary box #################
@@ -155,10 +154,6 @@ def speed_measure(PATH: str) -> None:
         frame_count = 0
 
         start=True
-
-      ########################## Player's forefoot did not pass the start line yet ##########################
-      else:
-        out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
 
 
     ############## started testing #################
@@ -175,7 +170,6 @@ def speed_measure(PATH: str) -> None:
       """ NOTE: ** Validate on 2nd frame ** """
       if len(stats) == 1:
         masked_frame = last_masked_frame
-        out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
         continue
       else:
         last_masked_frame = masked_frame
@@ -195,7 +189,6 @@ def speed_measure(PATH: str) -> None:
       ############## Limit player boundary box posistion with respect to start line #################
       if start_line_center[0] - player_centroid[0] > 150:
         last_masked_frame = None
-        out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
         continue
 
       ############## Update masked frame to fit player's boundary box #################
@@ -239,7 +232,6 @@ def speed_measure(PATH: str) -> None:
         frame_count += 1
         frame = draw_speed(frame, flip, player_id, frame_count)
 
-        out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
         continue
 
       ########################## Finished Test ##########################
@@ -255,9 +247,6 @@ def speed_measure(PATH: str) -> None:
       # Drop (reset) tracker
       tracker.reset()
 
-      # Write frame
-      out.write(cv2.flip(frame, 1)) if flip else out.write(frame)
-
   ########################## Save CSV file ##########################
   
   # Dictionary to dataframe
@@ -267,18 +256,6 @@ def speed_measure(PATH: str) -> None:
   players_stats_df.insert(0, 'Player ID', players_stats_df.index)
 
   # Save statistics dataframe in CSV file
-  players_stats_df.to_csv(CSV_SAVE_NAME, index=False)
+  players_stats_df.to_csv(CSV_SAVE_PATH, index=False)
 
   cap.release()
-  out.release()
-
-if __name__ == '__main__':
-    # Setup argument parser
-    parser = argparse.ArgumentParser(description="Measure player's speed")
-    parser.add_argument('PATH', help='Path of the video to be processed')
-
-    # Parse arguments
-    args = parser.parse_args()
-
-    # Move annotated images
-    speed_measure(args.PATH)

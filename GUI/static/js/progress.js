@@ -1,18 +1,16 @@
 function updateProgress() {
     // Make an AJAX request to the server to get the progress information
-    fetch('/progress/status')
+    fetch('/progress_status')
         .then(response => response.json())
         .then(data => {
-            // Update the progress information in the HTML
-            const progressPlaceholder = document.getElementById('progress-placeholder');
-            progressPlaceholder.innerHTML = '';
 
-            for (const filename in data) {
-                const progress = data[filename];
-                const progressText = document.createElement('p');
-                progressText.textContent = `${filename}: ${progress}%`;
-
-                progressPlaceholder.appendChild(progressText);
+            // Update multiple elements on the client-side based on the data returned by the server
+            const progressBarElements = document.getElementsByClassName('progress_role');
+            
+            // Loop over the keys and values of the dictionary
+            for (const i in data) {
+                const progressPlaceholder = progressBarElements[i];
+                progressPlaceholder.style.setProperty('--value', data[i]);
             }
         });
 }
