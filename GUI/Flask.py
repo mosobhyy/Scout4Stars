@@ -72,12 +72,10 @@ def progress_status():
 
     # Call the next iteration for every function
     for checkbox_id in uploaded_files.keys():
-        # try:
-            # result = next(measures_map.get(int(checkbox_id)))
-        # except:
-            # result = 100
-        result = next(measures_map.get(int(checkbox_id)))
-        
+        try:
+            result = next(measures_map.get(int(checkbox_id)))
+        except:
+            result = 100
 
         progress_list[int(checkbox_id)-1] = result
 
