@@ -7,6 +7,9 @@ from scripts.agility import agility_measure
 from scripts.speed import speed_measure
 from scripts.power import power_measure
 
+from scripts.df_to_text import *
+from scripts.player_classifier import *
+
 measures_map = {1: speed_measure,
                 2: power_measure,
                 5: agility_measure
@@ -59,10 +62,12 @@ def skills():
                 session['selected_checkboxes'] = selected_checkboxes
 
                 return redirect('/progress')
+            
    return render_template("skills page.html",
                             page_title="Skills Page",
                             custom_css='skills',
                             message='')
+
 
 @skills_app.route("/progress_status")
 def progress_status():
@@ -80,6 +85,7 @@ def progress_status():
         progress_list[int(checkbox_id)-1] = result
 
     return progress_list
+
 
 @skills_app.route("/progress")
 def progress():
@@ -105,24 +111,82 @@ def progress():
                         progress=progress)
 
 
+def players_classifier():
+    # Retrieve the uploaded files and selected checkboxes from session variables
+    uploaded_files = session.get('uploaded_files')
+    selected_checkboxes = session.get('selected_checkboxes')
+
+    # Check if the uploaded files and selected checkboxes exist in the session
+    if not uploaded_files or not selected_checkboxes:
+        return jsonify({})  # Return an empty dictionary if no progress information is available
+    
+    # Check if only 1 video uploaded
+    if len(uploaded_files) == 1:
+        checkbox_id, filename = uploaded_files.popitem()
+        # Get path of the saved csv file
+        CSV_SAVED_NAME = os.path.basename(filename).split('.')[0]+'_stats.csv'
+        CSV_SAVED_PATH = os.path.join(os.path.join(os.path.abspath('.'), 'data'), CSV_SAVED_NAME)
+
+        # Convert DataFrame ro text file for each player
+        final_df = initialize_final_df(CSV_SAVED_PATH)
+        final_df = fill_column(CSV_SAVED_PATH, final_df, checkbox_id)
+        convert_df_to_txt(final_df)
+        
+    else:
+        first_checkbox_id, first_filename= next(iter(uploaded_files.items()))
+        classifier = Classifier()
+        for checkbox_id, filename in uploaded_files.items():
+            if checkbox_id == first_checkbox_id:
+                TRAIN_PLAYERS_SAVED_NAME = os.path.basename(filename).split('.')[0]+'_players'
+                TRAIN_FOLDER_PATH = os.path.join(os.path.join(os.path.abspath('.'), 'data'), TRAIN_PLAYERS_SAVED_NAME)
+                model = classifier.train(TRAIN_FOLDER_PATH)
+
+                # Get csv file of this test 
+                CSV_SAVED_NAME = os.path.basename(filename).split('.')[0]+'_stats.csv'
+                CSV_SAVED_PATH = os.path.join(os.path.join(os.path.abspath('.'), 'data'), CSV_SAVED_NAME)
+                # Initialize final dataframe 
+                final_df = initialize_final_df(CSV_SAVED_PATH)
+                final_df = fill_column(CSV_SAVED_PATH, final_df, checkbox_id)
+            else:
+                TEST_PLAYERS_SAVED_NAME = os.path.basename(filename).split('.')[0]+'_players'
+                TEST_FOLDER_PATH = os.path.join(os.path.join(os.path.abspath('.'), 'data'), TEST_PLAYERS_SAVED_NAME)
+                players_index = classifier.classify(TEST_FOLDER_PATH, TRAIN_FOLDER_PATH, model)
+
+                # Get csv file of this test 
+                CSV_SAVED_NAME = os.path.basename(filename).split('.')[0]+'_stats.csv'
+                TEST_CSV_SAVED_PATH = os.path.join(os.path.join(os.path.abspath('.'), 'data'), CSV_SAVED_NAME)
+                final_df = assign_test_scores_to_players(final_df, players_index, checkbox_id, TEST_CSV_SAVED_PATH)
+                
+        convert_df_to_txt(final_df)
+
 @skills_app.route("/result")
+# Function to render result page
+def show_result_page():
+    return render_template("ResultReport.html", 
+                           page_title = "Result Page",
+                           custom_css = 'ResultReportStyle',
+                           len = len,
+                           )
+
+@skills_app.route("/final_result")
 def show_files():
     file_path = 'data'  # Path to the directory containing the files
     file_list = os.listdir(file_path)
     all_files = []
-
-    for file_name in file_list:
-            with open(os.path.join(file_path , file_name), 'r') as file:
-                content = file.readlines()
-                lines = [float(line.strip()) for line in content]
-                all_files.append(lines)
-
     
+    players_classifier()
+    for file_name in file_list:
+            if os.path.splitext(file_name)[1] == '.txt':
+                with open(os.path.join(file_path , file_name), 'r') as file:
+                    content = file.readlines()
+                    lines = [float(line.strip()) for line in content]
+                    all_files.append(lines)
+
     return render_template("ResultReport.html", 
-                           page_title="Result Page",
-                           custom_css='ResultReportStyle',
-                           data=all_files, len = len)
+                           page_title = "Result Page",
+                           custom_css = 'ResultReportStyle',
+                           data = all_files, len = len)
 
 if __name__ == "__main__":
     skills_app.config["TEMPLATES_AUTO_RELOAD"] = True
-    skills_app.run(debug=True)
+    skills_app.run()

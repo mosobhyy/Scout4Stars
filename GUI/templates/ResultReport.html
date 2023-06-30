@@ -8,11 +8,12 @@
     <thead>
         <tr>
             <th onclick="sortTable(0)">ID</th>
-            <th onclick="sortTable(1)">Agility</th>
+            <th onclick="sortTable(1)">Speed</th>
             <th onclick="sortTable(2)">Power</th>
-            <th onclick="sortTable(3)">Speed</th>
-            <th onclick="sortTable(4)">Shoot</th>
-            <th onclick="sortTable(5)">Dribble</th>
+            <th onclick="sortTable(3)">Shoot</th>
+            <th onclick="sortTable(4)">Dribble</th>
+            <th onclick="sortTable(5)">Agility</th>
+            <th onclick="sortTable(6)">Pass</th>
         </tr>
     </thead>
     <!-- End of Table Head-->
@@ -70,5 +71,25 @@ html2canvas($('#report-table-id')[0], {
     }
 });
 });
+
+// Function that shows an alert to the user and redirect to the final results.
+window.onload = function() {
+  if (window.location.pathname === '/result') {
+    alert("Please wait while we process your request and prepare the results for display.");
+  
+    fetch('/result')
+      .then(response => {
+        window.location.href = '/final_result';
+      })
+  } else if (window.location.pathname === '/final_result' && document.referrer.endsWith('/result')) {
+    // Reload the final result page once if it was redirected to from the /result page
+    setTimeout(function() {
+      location.reload();
+    }, 1000); // Wait for 1 second before reloading
+  }
+};
+ 
+    
+ 
 </script>
 {% endblock %}
