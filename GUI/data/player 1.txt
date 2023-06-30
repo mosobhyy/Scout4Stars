@@ -1,5 +1,0 @@
-player 1:
-         speed: 6
-         agility: 8
-	 power: 9
-
