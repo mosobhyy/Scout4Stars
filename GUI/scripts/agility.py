@@ -89,7 +89,7 @@ def agility_measure(PATH: str) -> None:
     if not ret:
       break
 
-    yield int(i/total_frames) * 100
+    yield int(i/total_frames * 100) 
 
     if flip:
       frame = cv2.flip(frame, 1)
